@@ -106,8 +106,14 @@ public class Lexer {
         }
 
         if ((!tokensFile.isEmpty()) || (!symbolsFile.isEmpty())) {
-            writeTokens(tokensFile);
-            writeSymbols(symbolsFile);
+            if (!symbolsFile.isEmpty()) {
+                writeSymbols(symbolsFile);
+            }
+            if (!tokensFile.isEmpty()) {
+                writeTokens(tokensFile);
+            }
+            //writeTokens(tokensFile);
+            //writeSymbols(symbolsFile);
         }
         return tokens;
     }

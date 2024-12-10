@@ -17,6 +17,10 @@ public class SemanticTree {
         return root;
     }
 
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
     private SyntaxNode buildTree(SyntaxNode node) throws IllegalArgumentException {
         Token token = node.getToken();
 

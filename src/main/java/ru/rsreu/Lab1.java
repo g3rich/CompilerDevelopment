@@ -1,7 +1,6 @@
 package ru.rsreu;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 
 public class Lab1 {
@@ -81,6 +80,69 @@ public class Lab1 {
                     translator.translate(args[1], args[2]);
                 } catch (IOException e) {
                     System.out.println("Ошибка: не удалось открыть файл для чтения или записи. Файл с таким названием отсутствует");
+                }
+                break;
+
+            case "GEN1": // Новый режим для генерации трехадресного кода и таблицы символов
+                if (args.length != 2) {
+                    System.out.println("Ошибка: неверное количество аргументов для режима GEN1.");
+                    return;
+                }
+                String gen1InputFile = args[1];
+
+                try {
+                    lexer.analyze(gen1InputFile, "", "");
+                    SymbolTable symbolTable =  lexer.getSymbolTable();
+                    Parser parser = new Parser(lexer.getTokens());
+                    SyntaxNode syntaxTree = parser.parse();
+                    // Выполнение семантического анализа
+                    //SemanticAnalyzer analyzer = new SemanticAnalyzer();
+                    //analyzer.analyze(syntaxTree, symbolTable);
+                    SemanticTree semanticTree = SemanticAnalyzer.analyze(syntaxTree, symbolTable);
+
+                    // Генерация трехадресного кода
+                    CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable);
+                    codeGenerator.generateCode();
+                    FileWriter.writeThreeAddressCodeToFile(codeGenerator.getInstructions(),"portable_code.txt");
+                    codeGenerator.generateSymbolTable("symbols.txt");
+
+                    System.out.println("Трехадресный код и таблица символов сгенерированы.");
+                } catch (IOException e) {
+                    System.out.println("Ошибка: не удалось открыть файл для чтения или записи.");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+
+            case "GEN2":
+                if (args.length != 2) {
+                    System.out.println("Ошибка: неверное количество аргументов для режима GEN1.");
+                    return;
+                }
+                String gen2InputFile = args[1];
+
+                try {
+                    lexer.analyze(gen2InputFile, "", "symbols.txt");
+                    SymbolTable symbolTable =  lexer.getSymbolTable();
+                    Parser parser = new Parser(lexer.getTokens());
+                    SyntaxNode syntaxTree = parser.parse();
+                    // Выполнение семантического анализа
+                    //SemanticAnalyzer analyzer = new SemanticAnalyzer();
+                    //analyzer.analyze(syntaxTree, symbolTable);
+                    SemanticTree semanticTree = SemanticAnalyzer.analyze(syntaxTree, symbolTable);
+
+                    // Генерация трехадресного кода
+                    CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable);
+
+                    List<Token> posfixForm = codeGenerator.generatePostfixNotation();
+
+                    FileWriter.writePostfixFormToFile(posfixForm, "postfix.txt");
+                    System.out.println("Постфиксный код и таблица символов сгенерированы.");
+                    //FileWriter.writeStringToFile("symbols.txt", symbolTable.getSymbols().toString());
+                } catch (IOException e) {
+                    System.out.println("Ошибка: не удалось открыть файл для чтения или записи.");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
 

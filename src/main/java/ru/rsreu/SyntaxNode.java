@@ -38,6 +38,10 @@ public class SyntaxNode { Token token;
         this.right = right;
     }
 
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
     public boolean isEndNode() {return this.right == null && this.left == null;}
 
     /*@Override

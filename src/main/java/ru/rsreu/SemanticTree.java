@@ -70,10 +70,10 @@ public class SemanticTree {
 
             if (leftType != rightType && rightType != null && leftType != null) {
                 if (leftType == VariableType.INT) {
-                    newNode.left = new SyntaxNode(new Token(TokenType.FUNCTION, "Int2Float"));
+                    newNode.left = new SyntaxNode(new Token(TokenType.FUNCTION, "Int2Float", 0));
                     newNode.left.left = node.left;
                 } else {
-                    newNode.right = new SyntaxNode(new Token(TokenType.FUNCTION, "Int2Float"));
+                    newNode.right = new SyntaxNode(new Token(TokenType.FUNCTION, "Int2Float", 0));
                     newNode.right.right = node.right;
                 }
             }

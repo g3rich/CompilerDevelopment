@@ -44,7 +44,8 @@ public class Instruction {
 
     private String getSymbolId(Token token) {
         //System.out.println("provGEt " + token.toString());
-        if (token.getType() == TokenType.ID) {
+        //System.out.println("type =  " + token.getType());
+        if (/*token.getType() == TokenType.ID*/ token.toString().contains("#T")) {
             //System.out.println("getsid "+ token.getValue().toString());
             Symbol symbol = (Symbol) token.getValue();
             for (Map.Entry<Integer, Symbol> entry : symbolTable.getSymbols().entrySet()) {
@@ -62,8 +63,9 @@ public class Instruction {
         String res = getSymbolId(resToken);
         //String res = resToken.getValue()/*.split(" - ")[0]*/;
         //System.out.println("toS INs" + res);
-        String tok0 = "";
-        if (tokens.get(0).getType() == TokenType.ID) {
+        //String tok0 = "";
+        String tok0 = getSymbolId(tokens.get(0));
+        /*if (tokens.get(0).getType() == TokenType.ID) {
             //System.out.println("prov0 "+ tokens.get(0).toString());
             if ((tokens.get(0).toString()).contains("#T")) {
                 tok0 = getSymbolId(tokens.get(0));
@@ -74,11 +76,17 @@ public class Instruction {
         } else {
             tok0 = tokens.get(0).toString().split(" - ")[0];
         }
+        /*if ((tokens.get(0).toString()).contains("#T")) {
+            tok0 = getSymbolId(tokens.get(0));
+        } else {
+            tok0 = tokens.get(0).toString().split(" - ")[0];
+        }*/
         if (tokens.size() == 1) {
             return String.format("%s %s %s", manual, res, tok0);
         } else if (tokens.size() == 2  && tokens.get(1) != null) {
-            String tok1 = "";
-            if (tokens.get(1).getType() == TokenType.ID) {
+            String tok1 = getSymbolId(tokens.get(1));
+            //String tok1 = "";
+            /*if (tokens.get(1).getType() == TokenType.ID) {
                 //System.out.println("prov1 "+ tokens.get(1).toString());
                 if ((tokens.get(1).toString()).contains("#T")) {
                     tok1 = getSymbolId(tokens.get(1));
@@ -87,7 +95,12 @@ public class Instruction {
                 }
             } else {
                 tok1 = tokens.get(1).toString().split(" - ")[0];
-            }
+            }*/
+            /*if ((tokens.get(1).toString()).contains("#T")) {
+                tok0 = getSymbolId(tokens.get(0));
+            } else {
+                tok0 = tokens.get(1).toString().split(" - ")[0];
+            }*/
             return String.format("%s %s %s %s", manual, res, tok0, tok1);
         }
         return String.format("%s %s %s", manual, res, tok0);

@@ -7,5 +7,18 @@ public enum TokenType {
     OPERATOR,   // Оператор (+, -, *, /)
     EQUAL,
     PARENTHESIS, // Скобки ( и )
-    FUNCTION // ФУНКЦИЯ
+    FUNCTION; // ФУНКЦИЯ
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case INT -> "целый";
+            case FLOAT -> "вещественный";
+            default -> "неизвестный тип";
+        };
+    }
 }
+
+
+
+

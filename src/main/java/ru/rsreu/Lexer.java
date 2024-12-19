@@ -63,7 +63,7 @@ public class Lexer {
 
                 // Добавляем переменную в таблицу символов с её типом
                 int symbolId = symbolTable.addSymbol(id, type);
-                tokens.add(new Token(TokenType.ID, String.valueOf(symbolId))); // Добавляем токен
+                tokens.add(new Token(TokenType.ID, String.valueOf(symbolId), symbolId)); // Добавляем токен
             }
             // Обработка чисел
             else if (Character.isDigit(currentChar)) {
@@ -90,14 +90,14 @@ public class Lexer {
                     }
                     number.append(fullInput.charAt(position++));
                 }
-                tokens.add(new Token(isFloat ? TokenType.FLOAT : TokenType.INT, number.toString()));
+                tokens.add(new Token(isFloat ? TokenType.FLOAT : TokenType.INT, number.toString(), 0));
             }
             else if ("+-*/".indexOf(currentChar) != -1) {
-                tokens.add(new Token(TokenType.OPERATOR, String.valueOf(currentChar)));
+                tokens.add(new Token(TokenType.OPERATOR, String.valueOf(currentChar), 0));
                 position++;
             }
             else if ("()".indexOf(currentChar) != -1) {
-                tokens.add(new Token(TokenType.PARENTHESIS, String.valueOf(currentChar)));
+                tokens.add(new Token(TokenType.PARENTHESIS, String.valueOf(currentChar), 0));
                 position++;
             } else {
                 int outputPosition = position + 1;

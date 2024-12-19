@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Lab1 {
     public static void main(String[] args) {
+        //args.clone(["GEN1", "inputExpr.txt", "OPT"]);
         if (args.length < 1) {
             System.out.println("Ошибка: недостаточно аргументов.");
             return;
@@ -84,8 +85,8 @@ public class Lab1 {
                 break;
 
             case "GEN1": // Новый режим для генерации трехадресного кода и таблицы символов
-                if (args.length != 2) {
-                    System.out.println("Ошибка: неверное количество аргументов для режима GEN1.");
+                if (args.length > 3 || args.length < 2) {
+                    System.out.println("Ошибка: неверное количество аргументов для режима GEN1." + args.length);
                     return;
                 }
                 String gen1InputFile = args[1];
@@ -101,12 +102,26 @@ public class Lab1 {
                     SemanticTree semanticTree = SemanticAnalyzer.analyze(syntaxTree, symbolTable);
 
                     // Генерация трехадресного кода
-                    CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable);
-                    codeGenerator.generateCode();
-                    FileWriter.writeThreeAddressCodeToFile(codeGenerator.getInstructions(),"portable_code.txt");
-                    codeGenerator.generateSymbolTable("symbols.txt");
+                    if (args.length == 3){
+                        //System.out.println("Условие прошло");
+                        SyntaxTreeOptimizer.optimizeTree(semanticTree);
+                        CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable, true);
+                        codeGenerator.generateCode();
+                        FileWriter.writeThreeAddressCodeToFile(codeGenerator.getInstructions(),"portable_code.txt");
+                        SymbolTable optimizedSymbolTable = SymbolTableOptimizer.optimize(symbolTable, codeGenerator.getInstructions());
+                        codeGenerator.generateSymbolTable("symbols.txt", optimizedSymbolTable);
 
-                    System.out.println("Трехадресный код и таблица символов сгенерированы.");
+                        System.out.println("Оптимизированный трехадресный код и таблица символов сгенерированы.");
+                    } else {
+                        //System.out.println("Условие не прошло");
+                        CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable, false);
+                        codeGenerator.generateCode();
+                        FileWriter.writeThreeAddressCodeToFile(codeGenerator.getInstructions(),"portable_code.txt");
+                        codeGenerator.generateSymbolTable("symbols.txt", symbolTable);
+
+                        System.out.println("Трехадресный код и таблица символов сгенерированы.");
+                    }
+
                 } catch (IOException e) {
                     System.out.println("Ошибка: не удалось открыть файл для чтения или записи.");
                 } catch (IllegalArgumentException e) {
@@ -115,7 +130,7 @@ public class Lab1 {
                 break;
 
             case "GEN2":
-                if (args.length != 2) {
+                if (args.length < 2 && args.length > 3) {
                     System.out.println("Ошибка: неверное количество аргументов для режима GEN1.");
                     return;
                 }
@@ -131,13 +146,25 @@ public class Lab1 {
                     //analyzer.analyze(syntaxTree, symbolTable);
                     SemanticTree semanticTree = SemanticAnalyzer.analyze(syntaxTree, symbolTable);
 
+                    if (args.length == 3){
+                        SyntaxTreeOptimizer.optimizeTree(semanticTree);
+
+                        CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable, true);
+
+                        List<Token> posfixForm = codeGenerator.generatePostfixNotation();
+
+                        FileWriter.writePostfixFormToFile(posfixForm, "postfix.txt");
+                        System.out.println("Оптимизированный постфиксный код сгенерирован.");
+                    } else {
+                        CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable, false);
+
+                        List<Token> posfixForm = codeGenerator.generatePostfixNotation();
+
+                        FileWriter.writePostfixFormToFile(posfixForm, "postfix.txt");
+                        System.out.println("Постфиксный код сгенерирован.");
+                    }
                     // Генерация трехадресного кода
-                    CodeGenerator codeGenerator = new CodeGenerator(semanticTree, symbolTable);
 
-                    List<Token> posfixForm = codeGenerator.generatePostfixNotation();
-
-                    FileWriter.writePostfixFormToFile(posfixForm, "postfix.txt");
-                    System.out.println("Постфиксный код и таблица символов сгенерированы.");
                     //FileWriter.writeStringToFile("symbols.txt", symbolTable.getSymbols().toString());
                 } catch (IOException e) {
                     System.out.println("Ошибка: не удалось открыть файл для чтения или записи.");
